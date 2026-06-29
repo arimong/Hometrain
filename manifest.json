@@ -1,7 +1,7 @@
 {
-  "name": "55세+ 홈트레이닝",
+  "name": "영앤진 홈트레이닝",
   "short_name": "홈트레이닝",
-  "description": "55세 이상을 위한 홈트레이닝 체크리스트 앱",
+  "description": " 뽀영과 찌노를 위한 홈트레이닝 체크리스트 앱",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#1e7a42",
