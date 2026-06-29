@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
+<meta name="theme-color" content="#1e7a42"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="홈트레이닝"/>
+<title>55세+ 홈트레이닝</title>
+<link rel="manifest" href="./manifest.json"/>
+<link rel="apple-touch-icon" href="./icons/icon-192.png"/>
+<style>
+:root {
+  --green: #1e7a42;
+  --green-dark: #165e32;
+  --green-light: #f0faf4;
+  --green-mid: #2d9b58;
+  --green-border: #7ec49e;
+  --blue: #3a82d8;
+  --blue-light: #f0f6ff;
+  --blue-border: #90b8f0;
+  --bg: #f4f6f4;
+  --surface: #ffffff;
+  --border: #e2e8e4;
+  --border-strong: #c8d5cc;
+  --text: #1a2b1e;
+  --text-2: #4a6052;
+  --text-3: #7a9080;
+  --radius: 16px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  height: 100%;
+  background: var(--bg);
+  font-family: -apple-system, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif;
+  color: var(--text);
+  overscroll-behavior: none;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+}
+
+/* ── HEADER ── */
+.hdr {
+  background: var(--green);
+  padding: calc(var(--safe-top) + 14px) 20px 0;
+  flex-shrink: 0;
+}
+.hdr-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 14px;
+}
+.hdr-icon {
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.18);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.hdr-title { font-size: 17px; font-weight: 600; color: #fff; line-height: 1.3; }
+.hdr-sub   { font-size: 13px; color: rgba(255,255,255,0.72); margin-top: 3px; }
+
+/* progress bar */
+.prog-wrap {
+  background: rgba(255,255,255,0.14);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 12px;
+}
+.prog-bar-bg { flex: 1; height: 7px; background: rgba(255,255,255,0.28); border-radius: 4px; overflow: hidden; }
+.prog-bar-fg { height: 100%; background: #fff; border-radius: 4px; transition: width 0.4s ease; }
+.prog-pct    { font-size: 13px; color: rgba(255,255,255,0.9); min-width: 34px; text-align: right; }
+
+/* ── NAV TABS ── */
+.nav {
+  display: flex;
+  background: var(--green);
+  gap: 4px;
+  padding: 0 16px;
+}
+.nav-btn {
+  flex: 1;
+  padding: 10px 6px;
+  font-size: 13px;
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  border-radius: 12px 12px 0 0;
+  background: rgba(255,255,255,0.13);
+  color: rgba(255,255,255,0.72);
+  transition: all 0.15s;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+}
+.nav-btn.active { background: var(--bg); color: var(--green); font-weight: 600; }
+
+/* ── SCROLL BODY ── */
+.body {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(var(--safe-bottom) + 24px);
+}
+
+/* ── SECTION LABEL ── */
+.sec-lbl {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-3);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 16px 20px 8px;
+}
+
+/* ── EXERCISE ITEMS ── */
+.ex-list { padding: 0 16px; display: flex; flex-direction: column; gap: 6px; }
+
+.ex-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 14px;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
+  active: scale(0.98);
+}
+.ex-item:active { transform: scale(0.98); }
+.ex-item.on { background: var(--green-light); border-color: var(--green-border); }
+
+.ex-num {
+  font-size: 12px; font-weight: 600;
+  color: var(--text-3); min-width: 20px; text-align: center;
+}
+.ex-item.on .ex-num { color: var(--green-mid); }
+
+.chk {
+  width: 26px; height: 26px; border-radius: 50%;
+  border: 2px solid var(--border-strong);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all 0.15s; background: transparent;
+}
+.ex-item.on .chk { background: var(--green-mid); border-color: var(--green-mid); }
+
+.ex-info { flex: 1; min-width: 0; }
+.ex-name {
+  font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.3;
+}
+.ex-item.on .ex-name { color: var(--green-dark); text-decoration: line-through; text-decoration-color: var(--green-border); }
+.ex-reps { font-size: 12px; color: var(--text-3); margin-top: 3px; }
+.ex-item.on .ex-reps { color: #5aaa7a; }
+
+/* ── DONE BANNER ── */
+.done-banner {
+  margin: 12px 16px 0;
+  padding: 13px 16px;
+  background: var(--green-light);
+  border: 1px solid var(--green-border);
+  border-radius: 14px;
+  display: none; align-items: center; gap: 12px;
+}
+.done-banner.show { display: flex; }
+.done-t { font-size: 14px; color: var(--green-dark); font-weight: 600; }
+.done-s { font-size: 12px; color: #3d8b5e; margin-top: 3px; }
+
+/* ── STATS CARDS ── */
+.stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; padding: 12px 16px 0; }
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 14px; padding: 12px 8px; text-align: center;
+}
+.stat-num { font-size: 22px; font-weight: 600; color: var(--green); }
+.stat-lbl { font-size: 11px; color: var(--text-3); margin-top: 3px; }
+
+/* ── RESET BTN ── */
+.reset-row { display: flex; justify-content: flex-end; padding: 12px 16px 0; }
+.reset-btn {
+  padding: 8px 16px; border-radius: 10px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface); font-family: inherit;
+  font-size: 13px; color: var(--text-2); cursor: pointer;
+}
+.reset-btn:active { background: var(--bg); }
+
+/* ── CALENDAR ── */
+.month-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px 8px;
+}
+.month-title { font-size: 16px; font-weight: 600; color: var(--text); }
+.month-btn {
+  width: 36px; height: 36px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 18px; color: var(--text-2);
+}
+.month-btn:active { background: var(--bg); }
+
+.cal-wrap { padding: 0 16px; }
+.cal-hdr { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; margin-bottom: 4px; }
+.cal-hdr-cell { text-align: center; font-size: 12px; font-weight: 600; color: var(--text-3); padding: 4px 0; }
+.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
+
+.cal-cell {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-2);
+  transition: all 0.12s;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.cal-cell:active { transform: scale(0.92); }
+.cal-cell.empty { border-color: transparent; background: transparent; cursor: default; }
+.cal-cell.today { border-color: var(--green-mid); color: var(--green); font-weight: 700; }
+.cal-cell.workout { background: var(--green); border-color: var(--green); color: #fff; font-weight: 600; }
+.cal-cell.rest-day { background: var(--blue); border-color: var(--blue); color: #fff; font-weight: 600; }
+
+.cal-legend {
+  display: flex; gap: 16px; padding: 12px 20px;
+  align-items: center; flex-wrap: wrap;
+}
+.leg { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-2); }
+.leg-dot { width: 12px; height: 12px; border-radius: 50%; }
+.cal-hint {
+  margin: 0 16px 12px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 12px; color: var(--text-3); line-height: 1.6;
+}
+
+/* ── REST TAB ── */
+.rest-list { padding: 0 16px; display: flex; flex-direction: column; gap: 6px; }
+.rest-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 14px;
+  border-radius: 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  cursor: pointer; user-select: none; -webkit-user-select: none;
+  transition: all 0.15s;
+}
+.rest-item:active { transform: scale(0.98); }
+.rest-item.on { background: var(--blue-light); border-color: var(--blue-border); }
+.chk-sq {
+  width: 24px; height: 24px; border-radius: 7px;
+  border: 2px solid var(--border-strong);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all 0.15s;
+}
+.rest-item.on .chk-sq { background: var(--blue); border-color: var(--blue); }
+.rest-name { font-size: 15px; font-weight: 500; color: var(--text); }
+.rest-item.on .rest-name { color: #1a50a0; }
+.rest-icon { font-size: 20px; }
+
+textarea.memo {
+  width: 100%; height: 90px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 12px 14px;
+  font-size: 14px; font-family: inherit; color: var(--text);
+  resize: none; outline: none;
+  line-height: 1.6;
+}
+textarea.memo:focus { border-color: var(--green-mid); }
+
+/* SVG check */
+.chk-svg { display: none; }
+.on .chk-svg { display: block; }
+.on .chk-empty { display: none; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-row">
+      <div class="hdr-icon">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+          <circle cx="15" cy="7" r="3.2" fill="white"/>
+          <path d="M9 13.5C9 12.1 10.1 11 11.5 11H18.5C19.9 11 21 12.1 21 13.5V20H9V13.5Z" fill="white" opacity="0.9"/>
+          <rect x="11.5" y="20" width="2" height="5" rx="1" fill="white" opacity="0.85"/>
+          <rect x="16.5" y="20" width="2" height="5" rx="1" fill="white" opacity="0.85"/>
+          <path d="M5 14.5L9 16.5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <path d="M25 14.5L21 16.5" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          <circle cx="3.5" cy="14.5" r="2" fill="white" opacity="0.8"/>
+          <circle cx="26.5" cy="14.5" r="2" fill="white" opacity="0.8"/>
+        </svg>
+      </div>
+      <div>
+        <div class="hdr-title">55세+ 홈트레이닝</div>
+        <div class="hdr-sub" id="today-txt"></div>
+      </div>
+    </div>
+    <div class="prog-wrap" id="prog-wrap" style="display:none;">
+      <div class="prog-bar-bg"><div class="prog-bar-fg" id="prog-fg" style="width:0%"></div></div>
+      <div class="prog-pct" id="prog-pct">0%</div>
+    </div>
+    <div class="nav">
+      <button class="nav-btn active" onclick="showTab('workout',this)">오늘 운동</button>
+      <button class="nav-btn" onclick="showTab('calendar',this)">요일 기록</button>
+      <button class="nav-btn" onclick="showTab('rest',this)">휴식일</button>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- TAB: WORKOUT -->
+    <div id="tab-workout">
+      <div class="sec-lbl">운동 목록</div>
+      <div class="ex-list" id="ex-list"></div>
+      <div class="done-banner" id="done-banner">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" fill="#2d9b58"/>
+          <path d="M7 12L10.5 15.5L17 8.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div>
+          <div class="done-t">오늘 운동 완료!</div>
+          <div class="done-s">정말 수고하셨어요.</div>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat-card"><div class="stat-num" id="s-done">0</div><div class="stat-lbl">완료</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-left">9</div><div class="stat-lbl">남음</div></div>
+        <div class="stat-card"><div class="stat-num" id="s-pct">0%</div><div class="stat-lbl">달성률</div></div>
+      </div>
+      <div class="reset-row"><button class="reset-btn" onclick="resetWorkout()">오늘 초기화</button></div>
+    </div>
+
+    <!-- TAB: CALENDAR -->
+    <div id="tab-calendar" style="display:none;">
+      <div class="month-nav">
+        <button class="month-btn" onclick="moveMonth(-1)">‹</button>
+        <div class="month-title" id="month-title"></div>
+        <button class="month-btn" onclick="moveMonth(1)">›</button>
+      </div>
+      <div class="cal-wrap">
+        <div class="cal-hdr">
+          <div class="cal-hdr-cell" style="color:#e05252;">일</div>
+          <div class="cal-hdr-cell">월</div>
+          <div class="cal-hdr-cell">화</div>
+          <div class="cal-hdr-cell">수</div>
+          <div class="cal-hdr-cell">목</div>
+          <div class="cal-hdr-cell">금</div>
+          <div class="cal-hdr-cell" style="color:#3a82d8;">토</div>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+      <div class="cal-legend">
+        <div class="leg"><div class="leg-dot" style="background:var(--green)"></div>운동일</div>
+        <div class="leg"><div class="leg-dot" style="background:var(--blue)"></div>휴식일</div>
+        <div class="leg"><div class="leg-dot" style="background:var(--surface);border:1px solid var(--border-strong)"></div>미기록</div>
+      </div>
+      <div class="cal-hint">날짜를 탭하면 <b>운동일 → 휴식일 → 초기화</b> 순으로 전환됩니다.</div>
+      <div class="reset-row"><button class="reset-btn" onclick="resetMonth()">이달 초기화</button></div>
+    </div>
+
+    <!-- TAB: REST -->
+    <div id="tab-rest" style="display:none;">
+      <div class="sec-lbl">오늘의 휴식 선택</div>
+      <div class="rest-list" id="rest-list"></div>
+      <div class="sec-lbl" style="margin-top:8px;">컨디션 메모</div>
+      <div style="padding:0 16px;">
+        <textarea class="memo" id="rest-memo" placeholder="오늘 컨디션이나 특이사항을 적어두세요" oninput="saveMemo()"></textarea>
+      </div>
+      <div class="reset-row"><button class="reset-btn" onclick="resetRest()">휴식 초기화</button></div>
+    </div>
+
+  </div><!-- .body -->
+</div><!-- .app -->
+
+<script>
+const EX = [
+  {id:'e1', name:'준비운동', reps:'5분', sub:'제자리 걷기, 팔·어깨 돌리기'},
+  {id:'e2', name:'의자 스쿼트', reps:'15회 × 3세트', sub:'하체 근력'},
+  {id:'e3', name:'벽 푸쉬업', reps:'15회 × 3세트', sub:'상체 근력'},
+  {id:'e4', name:'덤벨 로우', reps:'15회 × 3세트', sub:'등 근력'},
+  {id:'e5', name:'덤벨 숄더프레스', reps:'12회 × 3세트', sub:'어깨'},
+  {id:'e6', name:'플랭크', reps:'20~30초 × 3세트', sub:'코어'},
+  {id:'e7', name:'버드독', reps:'좌우 10회 × 3세트', sub:'코어·균형'},
+  {id:'e8', name:'브릿지', reps:'15회 × 3세트', sub:'엉덩이·허리'},
+  {id:'e9', name:'마무리 스트레칭', reps:'5분', sub:'유연성'},
+];
+const REST_OPTS = [
+  {id:'r1', name:'가벼운 산책', icon:'🚶'},
+  {id:'r2', name:'휴식 취하기', icon:'💤'},
+];
+
+let S = {};
+try { S = JSON.parse(localStorage.getItem('ht55_pwa') || '{}'); } catch(e) { S = {}; }
+const save = () => { try { localStorage.setItem('ht55_pwa', JSON.stringify(S)); } catch(e) {} };
+const get = k => !!S[k];
+const tog = (k) => { S[k] = !S[k]; save(); render(); };
+
+const now = new Date();
+const TODAY_KEY = `cal_${now.getFullYear()}_${now.getMonth()+1}_${now.getDate()}`;
+const WD = ['일','월','화','수','목','금','토'];
+
+let viewYear = now.getFullYear(), viewMonth = now.getMonth();
+
+// Today text
+const todayTxt = document.getElementById('today-txt');
+todayTxt.textContent = `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 (${WD[now.getDay()]})`;
+
+function showTab(name, btn) {
+  ['workout','calendar','rest'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t === name ? '' : 'none';
+  });
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('prog-wrap').style.display = name === 'workout' ? '' : 'none';
+  if (name === 'calendar') renderCal();
+}
+
+/* ── WORKOUT ── */
+function renderWorkout() {
+  const list = document.getElementById('ex-list');
+  list.innerHTML = '';
+  let done = 0;
+  EX.forEach((ex, i) => {
+    const on = get(ex.id);
+    if (on) done++;
+    const d = document.createElement('div');
+    d.className = 'ex-item' + (on ? ' on' : '');
+    d.setAttribute('role', 'checkbox');
+    d.setAttribute('aria-checked', on ? 'true' : 'false');
+    d.onclick = () => tog(ex.id);
+    d.innerHTML = `
+      <div class="ex-num">${i+1}</div>
+      <div class="chk">
+        ${on
+          ? '<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7L6 10L11 4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+          : ''}
+      </div>
+      <div class="ex-info">
+        <div class="ex-name">${ex.name}</div>
+        <div class="ex-reps">${ex.reps}</div>
+      </div>`;
+    list.appendChild(d);
+  });
+
+  const total = EX.length;
+  const pct = Math.round(done / total * 100);
+  document.getElementById('prog-fg').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('s-done').textContent = done;
+  document.getElementById('s-left').textContent = total - done;
+  document.getElementById('s-pct').textContent = pct + '%';
+
+  const banner = document.getElementById('done-banner');
+  if (done === total) {
+    banner.classList.add('show');
+    S[TODAY_KEY] = 'workout'; save();
+  } else {
+    banner.classList.remove('show');
+  }
+}
+
+function resetWorkout() {
+  if (!confirm('오늘 운동 기록을 초기화할까요?')) return;
+  EX.forEach(e => delete S[e.id]);
+  delete S[TODAY_KEY];
+  save(); render();
+}
+
+/* ── CALENDAR ── */
+function renderCal() {
+  document.getElementById('month-title').textContent = `${viewYear}년 ${viewMonth+1}월`;
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+  const first = new Date(viewYear, viewMonth, 1).getDay();
+  const days  = new Date(viewYear, viewMonth+1, 0).getDate();
+  for (let i = 0; i < first; i++) {
+    const e = document.createElement('div'); e.className = 'cal-cell empty'; grid.appendChild(e);
+  }
+  for (let d = 1; d <= days; d++) {
+    const key = `cal_${viewYear}_${viewMonth+1}_${d}`;
+    const val = S[key];
+    const isToday = viewYear === now.getFullYear() && viewMonth === now.getMonth() && d === now.getDate();
+    const cell = document.createElement('div');
+    let cls = 'cal-cell';
+    if (val === 'workout') cls += ' workout';
+    else if (val === 'rest') cls += ' rest-day';
+    else if (isToday) cls += ' today';
+    cell.className = cls;
+    cell.textContent = d;
+    cell.onclick = () => { cycleDay(key, isToday); };
+    grid.appendChild(cell);
+  }
+}
+
+function cycleDay(key, isToday) {
+  const cur = S[key];
+  if (!cur) S[key] = 'workout';
+  else if (cur === 'workout') S[key] = 'rest';
+  else delete S[key];
+  save();
+  renderCal();
+  if (isToday) renderWorkout();
+}
+
+function moveMonth(dir) {
+  viewMonth += dir;
+  if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+  if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+  renderCal();
+}
+
+function resetMonth() {
+  if (!confirm('이달 달력 기록을 초기화할까요?')) return;
+  const days = new Date(viewYear, viewMonth+1, 0).getDate();
+  for (let d = 1; d <= days; d++) delete S[`cal_${viewYear}_${viewMonth+1}_${d}`];
+  save(); renderCal();
+}
+
+/* ── REST ── */
+function renderRest() {
+  const list = document.getElementById('rest-list');
+  list.innerHTML = '';
+  REST_OPTS.forEach(r => {
+    const on = get(r.id);
+    const d = document.createElement('div');
+    d.className = 'rest-item' + (on ? ' on' : '');
+    d.onclick = () => tog(r.id);
+    d.innerHTML = `
+      <div class="rest-icon">${r.icon}</div>
+      <div class="chk-sq">${on ? '<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2.5 6.5L5.5 9.5L10.5 3.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' : ''}</div>
+      <div class="rest-name">${r.name}</div>`;
+    list.appendChild(d);
+  });
+  const memo = document.getElementById('rest-memo');
+  if (memo) memo.value = S['rest_memo'] || '';
+}
+
+function saveMemo() {
+  S['rest_memo'] = document.getElementById('rest-memo').value;
+  save();
+}
+
+function resetRest() {
+  REST_OPTS.forEach(r => delete S[r.id]);
+  delete S['rest_memo'];
+  save(); renderRest();
+}
+
+function render() { renderWorkout(); renderRest(); }
+render();
+
+/* ── SERVICE WORKER ── */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
