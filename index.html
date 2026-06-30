@@ -235,6 +235,9 @@ textarea.memo:focus{border-color:var(--green-mid);}
 .run-memo-input:focus{border-color:var(--blue);}
 .run-save-btn{width:100%;padding:13px;border-radius:12px;border:none;background:var(--blue);color:#fff;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;}
 .run-save-btn:active{transform:scale(0.98);background:#2a6abf;}
+.run-cancel-btn{padding:13px 18px;border-radius:12px;border:1.5px solid var(--border-strong);background:var(--surface);color:var(--text-2);font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:all 0.15s;}
+.run-cancel-btn:active{background:var(--bg);}
+.run-record.editing{background:var(--orange-light);border-color:var(--orange-border);}
 .run-date-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:10px 12px;background:var(--bg);border-radius:11px;border:1.5px solid var(--border);}
 .run-date-row:focus-within{border-color:var(--blue);}
 .run-date-label{font-size:12px;font-weight:600;color:var(--text-3);flex-shrink:0;}
@@ -426,7 +429,7 @@ textarea.memo:focus{border-color:var(--green-mid);}
 
       <!-- 입력 폼 -->
       <div class="run-form">
-        <div class="run-form-title">🏃 달리기 기록 입력</div>
+        <div class="run-form-title" id="run-form-title">🏃 달리기 기록 입력</div>
         <div class="run-date-row">
           <div class="run-date-label">📅 날짜</div>
           <input class="run-date-input" type="date" id="run-date"/>
@@ -450,7 +453,9 @@ textarea.memo:focus{border-color:var(--green-mid);}
           </div>
         </div>
         <textarea class="run-memo-input" id="run-memo" placeholder="메모 (날씨, 컨디션 등)"></textarea>
-        <button class="run-save-btn" onclick="saveRunRecord()">💾 저장</button>
+        <div id="run-form-btns" style="display:flex;gap:8px;">
+          <button class="run-save-btn" id="run-save-btn" onclick="saveRunRecord()" style="flex:1;">💾 저장</button>
+        </div>
       </div>
 
       <!-- 월간 요약 -->
@@ -933,6 +938,8 @@ function getRunRecords(y,m){
 }
 function saveRunRecords(y,m,arr){S[runRecordsKey(y,m)]=JSON.stringify(arr);save();}
 
+let editingRunId=null, editingRunYM=null;
+
 function setRunDateToday(){
   const d=now;
   const yyyy=d.getFullYear();
@@ -956,9 +963,38 @@ function saveRunRecord(){
   } else {
     y=now.getFullYear(); m=now.getMonth()+1; day=now.getDate();
   }
+
+  if(editingRunId!==null){
+    // ── 수정 모드 ──
+    const [oldY,oldM]=editingRunYM;
+    let oldRecords=getRunRecords(oldY,oldM);
+    const idx=oldRecords.findIndex(r=>r.id===editingRunId);
+    if(idx===-1){alert('기록을 찾을 수 없어요.');cancelEditRun();return;}
+
+    if(oldY===y && oldM===m){
+      // 같은 달 내 수정
+      oldRecords[idx]={id:editingRunId,date:day,laps,km,min,memo};
+      oldRecords.sort((a,b)=>b.date-a.date);
+      saveRunRecords(oldY,oldM,oldRecords);
+    } else {
+      // 다른 달로 날짜가 변경된 경우: 기존 기록 삭제 후 새 달에 추가
+      oldRecords.splice(idx,1);
+      saveRunRecords(oldY,oldM,oldRecords);
+      const newRecords=getRunRecords(y,m);
+      newRecords.push({id:editingRunId,date:day,laps,km,min,memo});
+      newRecords.sort((a,b)=>b.date-a.date);
+      saveRunRecords(y,m,newRecords);
+    }
+    cancelEditRun();
+    runViewYear=y; runViewMonth=m-1;
+    renderRun();
+    alert(`${y}년 ${m}월 ${day}일 기록이 수정되었어요! ✏️`);
+    return;
+  }
+
+  // ── 신규 저장 ──
   const records=getRunRecords(y,m);
   const id=Date.now();
-  // 날짜 오름차순 정렬로 삽입
   records.push({id,date:day,laps,km,min,memo});
   records.sort((a,b)=>b.date-a.date);
   saveRunRecords(y,m,records);
@@ -970,11 +1006,64 @@ function saveRunRecord(){
   alert(`${y}년 ${m}월 ${day}일 기록이 저장되었어요! 🏃`);
 }
 
+function startEditRun(y,m,id){
+  const records=getRunRecords(y,m);
+  const rec=records.find(r=>r.id===id);
+  if(!rec)return;
+  editingRunId=id;
+  editingRunYM=[y,m];
+
+  const mm=String(m).padStart(2,'0'), dd=String(rec.date).padStart(2,'0');
+  document.getElementById('run-date').value=`${y}-${mm}-${dd}`;
+  document.getElementById('run-laps').value=rec.laps||'';
+  document.getElementById('run-km').value=rec.km||'';
+  document.getElementById('run-min').value=rec.min||'';
+  document.getElementById('run-memo').value=rec.memo||'';
+
+  document.getElementById('run-form-title').textContent='✏️ 달리기 기록 수정 중';
+  document.getElementById('run-save-btn').textContent='✔ 수정 완료';
+  document.getElementById('run-save-btn').style.flex='1';
+  let btnsWrap=document.getElementById('run-form-btns');
+  if(!document.getElementById('run-cancel-edit-btn')){
+    const cancelBtn=document.createElement('button');
+    cancelBtn.id='run-cancel-edit-btn';
+    cancelBtn.className='run-cancel-btn';
+    cancelBtn.textContent='취소';
+    cancelBtn.onclick=cancelEditRun;
+    btnsWrap.appendChild(cancelBtn);
+  }
+
+  // 폼으로 스크롤
+  document.querySelector('.run-form').scrollIntoView({behavior:'smooth',block:'start'});
+  renderRun();
+}
+
+function cancelEditRun(){
+  editingRunId=null;
+  editingRunYM=null;
+  ['run-laps','run-km','run-min','run-memo'].forEach(fid=>document.getElementById(fid).value='');
+  setRunDateToday();
+  document.getElementById('run-form-title').textContent='🏃 달리기 기록 입력';
+  document.getElementById('run-save-btn').textContent='💾 저장';
+  const cancelBtn=document.getElementById('run-cancel-edit-btn');
+  if(cancelBtn)cancelBtn.remove();
+  renderRun();
+}
+
 function deleteRunRecord(y,m,id){
   if(!confirm('이 기록을 삭제할까요?'))return;
   let records=getRunRecords(y,m);
   records=records.filter(r=>r.id!==id);
   saveRunRecords(y,m,records);
+  if(editingRunId===id){
+    editingRunId=null; editingRunYM=null;
+    ['run-laps','run-km','run-min','run-memo'].forEach(fid=>document.getElementById(fid).value='');
+    setRunDateToday();
+    document.getElementById('run-form-title').textContent='🏃 달리기 기록 입력';
+    document.getElementById('run-save-btn').textContent='💾 저장';
+    const cancelBtn=document.getElementById('run-cancel-edit-btn');
+    if(cancelBtn)cancelBtn.remove();
+  }
   renderRun();
 }
 
@@ -1030,8 +1119,9 @@ function renderRun(){
     const date=new Date(y,m-1,r.date);
     const wd=WD[date.getDay()];
     const pace=r.km>0&&r.min>0?(r.min/r.km).toFixed(1):'';
+    const isEditing=editingRunId===r.id;
     const div=document.createElement('div');
-    div.className='run-record';
+    div.className='run-record'+(isEditing?' editing':'');
     div.innerHTML=`
       <div class="run-record-date">
         <div class="run-record-day">${r.date}</div>
@@ -1046,7 +1136,9 @@ function renderRun(){
           ${pace?`<div class="run-stat-pill">⚡ <b>${pace}</b>분/km</div>`:''}
         </div>
         ${r.memo?`<div class="run-record-note">${r.memo}</div>`:''}
+        ${isEditing?`<div class="run-record-note" style="color:var(--orange);font-weight:600;">✏️ 수정 중</div>`:''}
       </div>
+      <div class="run-del-btn" onclick="startEditRun(${y},${m},${r.id})" style="color:var(--blue);margin-right:6px;">✏️</div>
       <div class="run-del-btn" onclick="deleteRunRecord(${y},${m},${r.id})">✕</div>`;
     list.appendChild(div);
   });
