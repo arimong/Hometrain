@@ -75,6 +75,8 @@ html,body{height:100%;background:var(--bg);font-family:-apple-system,'Apple SD G
 .item-timer-btn{flex-shrink:0;width:34px;height:34px;border-radius:50%;border:1.5px solid var(--border-strong);background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all 0.15s;}
 .item-timer-btn:active{transform:scale(0.88);}
 .item-timer-btn.done-t{background:#e8f7ef;border-color:var(--green-border);}
+.item-video-btn{flex-shrink:0;width:34px;height:34px;border-radius:50%;border:1.5px solid var(--border-strong);background:var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:var(--text-2);transition:all 0.15s;}
+.item-video-btn:active{transform:scale(0.88);background:#fff0f0;border-color:#f0b0b0;color:#e05252;}
 
 /* DONE BANNER */
 .done-banner{margin:10px 14px 0;padding:12px 14px;background:var(--green-light);border:1px solid var(--green-border);border-radius:13px;display:none;align-items:center;gap:11px;}
@@ -576,6 +578,9 @@ textarea.memo:focus{border-color:var(--green-mid);}
     <div class="timer-handle"></div>
     <div class="tm-ex-name" id="tm-name"></div>
     <div class="tm-ex-reps" id="tm-reps"></div>
+    <div style="text-align:center;margin-bottom:18px;margin-top:-10px;">
+      <span style="font-size:12px;color:var(--blue);font-weight:600;cursor:pointer;" onclick="if(tmEx)openVideoSearch(tmEx)">▶ 자세 영상 보기</span>
+    </div>
     <div class="timer-circle-wrap">
       <svg class="timer-svg" width="174" height="174" viewBox="0 0 174 174">
         <circle class="timer-track" cx="87" cy="87" r="78"/>
@@ -603,15 +608,15 @@ textarea.memo:focus{border-color:var(--green-mid);}
 
 <script>
 const EX=[
-  {id:'e1',name:'준비운동',reps:'5분',defaultSec:300,sets:1},
-  {id:'e2',name:'의자 스쿼트',reps:'15회 × 3세트',defaultSec:0,sets:3},
-  {id:'e3',name:'벽 푸쉬업',reps:'15회 × 3세트',defaultSec:0,sets:3},
-  {id:'e4',name:'덤벨 로우',reps:'15회 × 3세트',defaultSec:0,sets:3},
-  {id:'e5',name:'덤벨 숄더프레스',reps:'12회 × 3세트',defaultSec:0,sets:3},
-  {id:'e6',name:'플랭크',reps:'20~30초 × 3세트',defaultSec:30,sets:3},
-  {id:'e7',name:'버드독',reps:'좌우 10회 × 3세트',defaultSec:0,sets:3},
-  {id:'e8',name:'브릿지',reps:'15회 × 3세트',defaultSec:0,sets:3},
-  {id:'e9',name:'마무리 스트레칭',reps:'5분',defaultSec:300,sets:1},
+  {id:'e1',name:'준비운동',reps:'5분',defaultSec:300,sets:1,videoQuery:'시니어 준비운동 스트레칭 방법'},
+  {id:'e2',name:'의자 스쿼트',reps:'15회 × 3세트',defaultSec:0,sets:3,videoQuery:'시니어 의자 스쿼트 운동 방법'},
+  {id:'e3',name:'벽 푸쉬업',reps:'15회 × 3세트',defaultSec:0,sets:3,videoQuery:'벽 푸쉬업 운동 방법'},
+  {id:'e4',name:'덤벨 로우',reps:'15회 × 3세트',defaultSec:0,sets:3,videoQuery:'덤벨 로우 운동 자세'},
+  {id:'e5',name:'덤벨 숄더프레스',reps:'12회 × 3세트',defaultSec:0,sets:3,videoQuery:'덤벨 숄더프레스 운동 방법'},
+  {id:'e6',name:'플랭크',reps:'20~30초 × 3세트',defaultSec:30,sets:3,videoQuery:'시니어 플랭크 운동 자세'},
+  {id:'e7',name:'버드독',reps:'좌우 10회 × 3세트',defaultSec:0,sets:3,videoQuery:'버드독 운동 방법'},
+  {id:'e8',name:'브릿지',reps:'15회 × 3세트',defaultSec:0,sets:3,videoQuery:'브릿지 운동 자세'},
+  {id:'e9',name:'마무리 스트레칭',reps:'5분',defaultSec:300,sets:1,videoQuery:'운동 후 마무리 스트레칭'},
 ];
 const REST_OPTS=[{id:'r1',name:'가벼운 산책',icon:'🚶'},{id:'r2',name:'휴식 취하기',icon:'💤'}];
 const WD=['일','월','화','수','목','금','토'];
@@ -656,6 +661,12 @@ function updateTotalDisplay(){
 // ── 항목 타이머 ──
 const CIRCUM=2*Math.PI*78;
 let tmEx=null,tmSec=0,tmTotal=0,tmRunning=false,tmInterval=null,tmCurrentSet=1,tmTotalSets=3;
+
+function openVideoSearch(ex){
+  const query = encodeURIComponent(ex.videoQuery || ex.name + ' 운동 방법');
+  const url = `https://www.youtube.com/results?search_query=${query}`;
+  window.open(url, '_blank');
+}
 
 function openTimer(ex){
   tmEx=ex;tmSec=ex.defaultSec||30;tmTotal=tmSec;
@@ -742,6 +753,7 @@ function renderWorkout(){
         <div class="ex-name">${ex.name}</div>
         <div class="ex-reps">${ex.reps}</div>
       </div>
+      <div class="item-video-btn" onclick="openVideoSearch(EX[${i}]);event.stopPropagation()" title="자세 영상 보기">▶</div>
       <div class="item-timer-btn${on?' done-t':''}" onclick="openTimer(EX[${i}]);event.stopPropagation()">${on?'✓':'⏱'}</div>`;
     list.appendChild(d);
   });
