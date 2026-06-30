@@ -938,7 +938,7 @@ function getRunRecords(y,m){
 }
 function saveRunRecords(y,m,arr){S[runRecordsKey(y,m)]=JSON.stringify(arr);save();}
 
-let editingRunId=null, editingRunYM=null;
+let editingRunId=null, editingRunYM=null, preEditRunFormState=null, runDateInitialized=false;
 
 function setRunDateToday(){
   const d=now;
@@ -969,7 +969,7 @@ function saveRunRecord(){
     const [oldY,oldM]=editingRunYM;
     let oldRecords=getRunRecords(oldY,oldM);
     const idx=oldRecords.findIndex(r=>r.id===editingRunId);
-    if(idx===-1){alert('기록을 찾을 수 없어요.');cancelEditRun();return;}
+    if(idx===-1){alert('기록을 찾을 수 없어요.');finishEditRun();return;}
 
     if(oldY===y && oldM===m){
       // 같은 달 내 수정
@@ -985,7 +985,7 @@ function saveRunRecord(){
       newRecords.sort((a,b)=>b.date-a.date);
       saveRunRecords(y,m,newRecords);
     }
-    cancelEditRun();
+    finishEditRun();
     runViewYear=y; runViewMonth=m-1;
     renderRun();
     alert(`${y}년 ${m}월 ${day}일 기록이 수정되었어요! ✏️`);
@@ -1010,6 +1010,18 @@ function startEditRun(y,m,id){
   const records=getRunRecords(y,m);
   const rec=records.find(r=>r.id===id);
   if(!rec)return;
+
+  // 수정 버튼 누르기 전 폼 상태 저장 (이미 수정 중이 아닐 때만)
+  if(editingRunId===null){
+    preEditRunFormState={
+      date: document.getElementById('run-date').value,
+      laps: document.getElementById('run-laps').value,
+      km: document.getElementById('run-km').value,
+      min: document.getElementById('run-min').value,
+      memo: document.getElementById('run-memo').value,
+    };
+  }
+
   editingRunId=id;
   editingRunYM=[y,m];
 
@@ -1041,13 +1053,36 @@ function startEditRun(y,m,id){
 function cancelEditRun(){
   editingRunId=null;
   editingRunYM=null;
+  // 수정 버튼 누르기 전 상태로 정확히 복원
+  if(preEditRunFormState){
+    document.getElementById('run-date').value=preEditRunFormState.date;
+    document.getElementById('run-laps').value=preEditRunFormState.laps;
+    document.getElementById('run-km').value=preEditRunFormState.km;
+    document.getElementById('run-min').value=preEditRunFormState.min;
+    document.getElementById('run-memo').value=preEditRunFormState.memo;
+    preEditRunFormState=null;
+  } else {
+    ['run-laps','run-km','run-min','run-memo'].forEach(fid=>document.getElementById(fid).value='');
+    setRunDateToday();
+  }
+  document.getElementById('run-form-title').textContent='🏃 달리기 기록 입력';
+  document.getElementById('run-save-btn').textContent='💾 저장';
+  const cancelBtn=document.getElementById('run-cancel-edit-btn');
+  if(cancelBtn)cancelBtn.remove();
+  renderRun();
+}
+
+function finishEditRun(){
+  // 저장 완료 후 정리: 입력란을 비우고 신규 입력 모드로
+  editingRunId=null;
+  editingRunYM=null;
+  preEditRunFormState=null;
   ['run-laps','run-km','run-min','run-memo'].forEach(fid=>document.getElementById(fid).value='');
   setRunDateToday();
   document.getElementById('run-form-title').textContent='🏃 달리기 기록 입력';
   document.getElementById('run-save-btn').textContent='💾 저장';
   const cancelBtn=document.getElementById('run-cancel-edit-btn');
   if(cancelBtn)cancelBtn.remove();
-  renderRun();
 }
 
 function deleteRunRecord(y,m,id){
@@ -1056,13 +1091,7 @@ function deleteRunRecord(y,m,id){
   records=records.filter(r=>r.id!==id);
   saveRunRecords(y,m,records);
   if(editingRunId===id){
-    editingRunId=null; editingRunYM=null;
-    ['run-laps','run-km','run-min','run-memo'].forEach(fid=>document.getElementById(fid).value='');
-    setRunDateToday();
-    document.getElementById('run-form-title').textContent='🏃 달리기 기록 입력';
-    document.getElementById('run-save-btn').textContent='💾 저장';
-    const cancelBtn=document.getElementById('run-cancel-edit-btn');
-    if(cancelBtn)cancelBtn.remove();
+    finishEditRun();
   }
   renderRun();
 }
@@ -1077,9 +1106,11 @@ function moveRunMonth(dir){
 function renderRun(){
   const y=runViewYear, m=runViewMonth+1;
   document.getElementById('run-month-label').textContent=`${y}년 ${m}월`;
-  // 날짜 input 초기값 (비어있으면 오늘로)
-  const dateInput=document.getElementById('run-date');
-  if(!dateInput.value) setRunDateToday();
+  // 날짜 input 초기값 (최초 진입 시 한 번만 오늘로 채움)
+  if(!runDateInitialized){
+    setRunDateToday();
+    runDateInitialized=true;
+  }
 
   // 오늘 기록 카드
   const todayRecords=getRunRecords(now.getFullYear(),now.getMonth()+1)
