@@ -1134,16 +1134,11 @@ function renderReport(){
   document.getElementById('rp-score').textContent=score;
 
   let grade,comment;
-  if(score>=85){grade='🏆';comment='완벽한 한 달이에요!
-꾸준함이 건강을 만들어요.';}
-  else if(score>=70){grade='🥇';comment='정말 잘하고 계세요!
-이 페이스를 유지해요.';}
-  else if(score>=55){grade='👍';comment='좋은 흐름이에요.
-조금만 더 힘내볼까요?';}
-  else if(score>=35){grade='💪';comment='시작이 반이에요!
-내일도 함께 운동해요.';}
-  else{grade='🌱';comment='지금부터 시작해도 괜찮아요.
-작은 것부터 차근차근!';}
+  if(score>=85){grade='🏆';comment='완벽한 한 달이에요! 꾸준함이 건강을 만들어요.';}
+  else if(score>=70){grade='🥇';comment='정말 잘하고 계세요! 이 페이스를 유지해요.';}
+  else if(score>=55){grade='👍';comment='좋은 흐름이에요. 조금만 더 힘내볼까요?';}
+  else if(score>=35){grade='💪';comment='시작이 반이에요! 내일도 함께 운동해요.';}
+  else{grade='🌱';comment='지금부터 시작해도 괜찮아요. 작은 것부터 차근차근!';}
   document.getElementById('rp-grade').textContent=grade;
   document.getElementById('rp-comment').textContent=comment;
 
@@ -1153,8 +1148,7 @@ function renderReport(){
     rKm>0?`달리기 총 ${rKm%1===0?rKm:rKm.toFixed(1)}km 완주! ${rKm>=20?'대단한 거리예요 🏃':'계속 달려요 🏃'}`:null,
     maxStreak>=3?`최장 ${maxStreak}일 연속 운동 달성! 습관이 만들어지고 있어요 🔥`:null,
     curStreak>0?`현재 ${curStreak}일 연속 진행 중! 오늘도 이어가요 ✨`:null,
-  ].filter(Boolean).join('
-');
+  ].filter(Boolean).join(' ');
   document.getElementById('rp-message').textContent=messages||'기록을 쌓아가면 여기서 이달의 한마디를 볼 수 있어요!';
 }
 
