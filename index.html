@@ -233,6 +233,12 @@ textarea.memo:focus{border-color:var(--green-mid);}
 .run-memo-input:focus{border-color:var(--blue);}
 .run-save-btn{width:100%;padding:13px;border-radius:12px;border:none;background:var(--blue);color:#fff;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;}
 .run-save-btn:active{transform:scale(0.98);background:#2a6abf;}
+.run-date-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;padding:10px 12px;background:var(--bg);border-radius:11px;border:1.5px solid var(--border);}
+.run-date-row:focus-within{border-color:var(--blue);}
+.run-date-label{font-size:12px;font-weight:600;color:var(--text-3);flex-shrink:0;}
+.run-date-input{flex:1;border:none;background:transparent;font-family:inherit;font-size:14px;font-weight:600;color:var(--text);outline:none;}
+.run-date-today-btn{padding:4px 10px;border-radius:7px;border:1px solid var(--border-strong);background:var(--surface);font-family:inherit;font-size:12px;color:var(--text-2);cursor:pointer;flex-shrink:0;}
+.run-date-today-btn:active{background:var(--blue);color:#fff;border-color:var(--blue);}
 .run-history-hdr{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 7px;}
 .run-history-title{font-size:13px;font-weight:600;color:var(--text);}
 .run-history-nav{display:flex;align-items:center;gap:8px;}
@@ -257,6 +263,41 @@ textarea.memo:focus{border-color:var(--green-mid);}
 .run-month-num{font-size:20px;font-weight:700;color:var(--blue);}
 .run-month-lbl{font-size:11px;color:var(--text-3);margin-top:2px;}
 .run-empty{padding:28px;text-align:center;color:var(--text-3);font-size:13px;}
+
+/* ── 월간 리포트 탭 ── */
+.report-month-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 10px;}
+.report-month-title{font-size:16px;font-weight:700;color:var(--text);}
+.report-month-btn{width:34px;height:34px;border-radius:9px;border:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:17px;color:var(--text-2);}
+.report-month-btn:active{background:var(--bg);}
+.report-score-card{margin:0 14px 12px;background:linear-gradient(135deg,#1e7a42,#2d9b58);border-radius:16px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;}
+.report-score-num{font-size:52px;font-weight:700;color:#fff;line-height:1;letter-spacing:-0.02em;}
+.report-score-unit{font-size:13px;color:rgba(255,255,255,0.75);margin-top:4px;}
+.report-score-right{text-align:right;}
+.report-score-grade{font-size:32px;line-height:1;margin-bottom:6px;}
+.report-score-comment{font-size:12px;color:rgba(255,255,255,0.85);line-height:1.5;text-align:right;}
+.report-card{margin:0 14px 10px;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.report-card-hdr{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid var(--border);background:var(--bg);}
+.report-card-icon{font-size:16px;}
+.report-card-title{font-size:13px;font-weight:600;color:var(--text);}
+.report-card-body{padding:14px;}
+.report-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
+.report-mini-stat{text-align:center;padding:10px 6px;background:var(--bg);border-radius:10px;}
+.report-mini-num{font-size:20px;font-weight:700;color:var(--green);}
+.report-mini-lbl{font-size:11px;color:var(--text-3);margin-top:2px;}
+.report-day-bars{display:flex;gap:5px;align-items:flex-end;height:56px;margin-bottom:6px;}
+.report-day-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.report-day-bar-wrap{flex:1;display:flex;align-items:flex-end;width:100%;}
+.report-day-bar{width:100%;border-radius:4px 4px 0 0;min-height:2px;transition:height 0.4s ease;}
+.report-day-lbl{font-size:10px;color:var(--text-3);font-weight:500;}
+.report-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:12px;}
+.report-run-stat{text-align:center;padding:9px 4px;background:var(--bg);border-radius:10px;}
+.report-run-num{font-size:18px;font-weight:700;color:var(--blue);}
+.report-run-lbl{font-size:10px;color:var(--text-3);margin-top:2px;}
+.report-streak-row{display:flex;gap:8px;}
+.report-streak-item{flex:1;padding:12px 10px;background:var(--bg);border-radius:11px;text-align:center;}
+.report-streak-num{font-size:26px;font-weight:700;color:var(--green);}
+.report-streak-lbl{font-size:11px;color:var(--text-3);margin-top:2px;line-height:1.4;}
+.report-message{margin:0 14px 14px;padding:14px 16px;background:var(--green-light);border:1px solid var(--green-border);border-radius:13px;font-size:13px;color:var(--green-dark);line-height:1.7;text-align:center;}
 </style>
 </head>
 <body>
@@ -299,6 +340,7 @@ textarea.memo:focus{border-color:var(--green-mid);}
       <button class="nav-btn active" onclick="showTab('workout',this)">오늘 운동</button>
       <button class="nav-btn" onclick="showTab('week',this)">주간 기록</button>
       <button class="nav-btn" onclick="showTab('run',this)">달리기</button>
+      <button class="nav-btn" onclick="showTab('report',this)">월간 리포트</button>
       <button class="nav-btn" onclick="showTab('calendar',this)">월 달력</button>
       <button class="nav-btn" onclick="showTab('rest',this)">휴식일</button>
     </div>
@@ -383,6 +425,11 @@ textarea.memo:focus{border-color:var(--green-mid);}
       <!-- 입력 폼 -->
       <div class="run-form">
         <div class="run-form-title">🏃 달리기 기록 입력</div>
+        <div class="run-date-row">
+          <div class="run-date-label">📅 날짜</div>
+          <input class="run-date-input" type="date" id="run-date"/>
+          <button class="run-date-today-btn" onclick="setRunDateToday()">오늘</button>
+        </div>
         <div class="run-input-grid">
           <div class="run-input-box">
             <div class="run-input-label">바퀴 수</div>
@@ -422,6 +469,66 @@ textarea.memo:focus{border-color:var(--green-mid);}
         </div>
       </div>
       <div class="run-list" id="run-list"></div>
+    </div>
+
+    <!-- TAB: 월간 리포트 -->
+    <div id="tab-report" style="display:none;">
+      <div class="report-month-nav">
+        <button class="report-month-btn" onclick="moveReportMonth(-1)">&#8249;</button>
+        <div class="report-month-title" id="report-month-title"></div>
+        <button class="report-month-btn" onclick="moveReportMonth(1)">&#8250;</button>
+      </div>
+      <!-- 종합 점수 -->
+      <div class="report-score-card">
+        <div>
+          <div class="report-score-num" id="rp-score">0</div>
+          <div class="report-score-unit">점 / 100점</div>
+        </div>
+        <div class="report-score-right">
+          <div class="report-score-grade" id="rp-grade">🌱</div>
+          <div class="report-score-comment" id="rp-comment"></div>
+        </div>
+      </div>
+      <!-- 홈트레이닝 -->
+      <div class="report-card">
+        <div class="report-card-hdr"><div class="report-card-icon">💪</div><div class="report-card-title">홈트레이닝</div></div>
+        <div class="report-card-body">
+          <div class="report-grid-3">
+            <div class="report-mini-stat"><div class="report-mini-num" id="rp-wdays">0</div><div class="report-mini-lbl">운동일</div></div>
+            <div class="report-mini-stat"><div class="report-mini-num" id="rp-wrate">0%</div><div class="report-mini-lbl">달성률</div></div>
+            <div class="report-mini-stat"><div class="report-mini-num" id="rp-restdays">0</div><div class="report-mini-lbl">휴식일</div></div>
+          </div>
+          <div style="font-size:11px;color:var(--text-3);margin-bottom:6px;font-weight:600;">요일별 운동 분포</div>
+          <div class="report-day-bars" id="rp-day-bars"></div>
+          <div style="display:flex;gap:5px;" id="rp-day-labels"></div>
+        </div>
+      </div>
+      <!-- 달리기 -->
+      <div class="report-card">
+        <div class="report-card-hdr"><div class="report-card-icon">🏃</div><div class="report-card-title">달리기</div></div>
+        <div class="report-card-body">
+          <div class="report-grid-4">
+            <div class="report-run-stat"><div class="report-run-num" id="rp-rdays">0</div><div class="report-run-lbl">운동일</div></div>
+            <div class="report-run-stat"><div class="report-run-num" id="rp-rlaps">0</div><div class="report-run-lbl">총 바퀴</div></div>
+            <div class="report-run-stat"><div class="report-run-num" id="rp-rkm">0</div><div class="report-run-lbl">총 km</div></div>
+            <div class="report-run-stat"><div class="report-run-num" id="rp-rmin">0</div><div class="report-run-lbl">총 분</div></div>
+          </div>
+          <div style="font-size:12px;color:var(--text-2);" id="rp-pace-info"></div>
+        </div>
+      </div>
+      <!-- 연속 기록 -->
+      <div class="report-card">
+        <div class="report-card-hdr"><div class="report-card-icon">🔥</div><div class="report-card-title">연속 기록</div></div>
+        <div class="report-card-body">
+          <div class="report-streak-row">
+            <div class="report-streak-item"><div class="report-streak-num" id="rp-cur-streak">0</div><div class="report-streak-lbl">현재 연속<br>운동일</div></div>
+            <div class="report-streak-item"><div class="report-streak-num" id="rp-max-streak">0</div><div class="report-streak-lbl">이달 최장<br>연속일</div></div>
+            <div class="report-streak-item"><div class="report-streak-num" id="rp-total-act">0</div><div class="report-streak-lbl">이달 총<br>활동일</div></div>
+          </div>
+        </div>
+      </div>
+      <!-- 이달의 한마디 -->
+      <div class="report-message" id="rp-message"></div>
     </div>
 
     <!-- TAB: CALENDAR -->
@@ -606,7 +713,7 @@ function beep(){try{const ctx=new(window.AudioContext||window.webkitAudioContext
 
 // ── TABS ──
 function showTab(name,btn){
-  ['workout','week','run','calendar','rest'].forEach(t=>{document.getElementById('tab-'+t).style.display=t===name?'':'none';});
+  ['workout','week','run','report','calendar','rest'].forEach(t=>{document.getElementById('tab-'+t).style.display=t===name?'':'none';});
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('prog-wrap').style.display=name==='workout'?'':'none';
@@ -614,6 +721,7 @@ function showTab(name,btn){
   if(name==='calendar')renderCal();
   if(name==='week')renderWeek();
   if(name==='run')renderRun();
+  if(name==='report')renderReport();
 }
 
 // ── WORKOUT ──
@@ -813,20 +921,41 @@ function getRunRecords(y,m){
 }
 function saveRunRecords(y,m,arr){S[runRecordsKey(y,m)]=JSON.stringify(arr);save();}
 
+function setRunDateToday(){
+  const d=now;
+  const yyyy=d.getFullYear();
+  const mm=String(d.getMonth()+1).padStart(2,'0');
+  const dd=String(d.getDate()).padStart(2,'0');
+  document.getElementById('run-date').value=`${yyyy}-${mm}-${dd}`;
+}
+
 function saveRunRecord(){
   const laps=parseFloat(document.getElementById('run-laps').value)||0;
   const km=parseFloat(document.getElementById('run-km').value)||0;
   const min=parseInt(document.getElementById('run-min').value)||0;
   const memo=document.getElementById('run-memo').value.trim();
   if(!laps&&!km&&!min){alert('바퀴 수, 거리, 시간 중 하나 이상 입력해 주세요.');return;}
-  const y=now.getFullYear(), m=now.getMonth()+1;
+  // 날짜 파싱
+  const dateVal=document.getElementById('run-date').value;
+  let y,m,day;
+  if(dateVal){
+    const parts=dateVal.split('-');
+    y=parseInt(parts[0]); m=parseInt(parts[1]); day=parseInt(parts[2]);
+  } else {
+    y=now.getFullYear(); m=now.getMonth()+1; day=now.getDate();
+  }
   const records=getRunRecords(y,m);
   const id=Date.now();
-  records.unshift({id,date:now.getDate(),laps,km,min,memo});
+  // 날짜 오름차순 정렬로 삽입
+  records.push({id,date:day,laps,km,min,memo});
+  records.sort((a,b)=>b.date-a.date);
   saveRunRecords(y,m,records);
   // 입력 초기화
-  ['run-laps','run-km','run-min','run-memo'].forEach(id=>document.getElementById(id).value='');
+  ['run-laps','run-km','run-min','run-memo'].forEach(fid=>document.getElementById(fid).value='');
+  // 저장한 달로 뷰 이동
+  runViewYear=y; runViewMonth=m-1;
   renderRun();
+  alert(`${y}년 ${m}월 ${day}일 기록이 저장되었어요! 🏃`);
 }
 
 function deleteRunRecord(y,m,id){
@@ -847,6 +976,9 @@ function moveRunMonth(dir){
 function renderRun(){
   const y=runViewYear, m=runViewMonth+1;
   document.getElementById('run-month-label').textContent=`${y}년 ${m}월`;
+  // 날짜 input 초기값 (비어있으면 오늘로)
+  const dateInput=document.getElementById('run-date');
+  if(!dateInput.value) setRunDateToday();
 
   // 오늘 기록 카드
   const todayRecords=getRunRecords(now.getFullYear(),now.getMonth()+1)
@@ -906,6 +1038,124 @@ function renderRun(){
       <div class="run-del-btn" onclick="deleteRunRecord(${y},${m},${r.id})">✕</div>`;
     list.appendChild(div);
   });
+}
+
+// ── 월간 리포트 ──
+let reportYear=now.getFullYear(), reportMonth=now.getMonth();
+
+function moveReportMonth(dir){
+  reportMonth+=dir;
+  if(reportMonth<0){reportMonth=11;reportYear--;}
+  if(reportMonth>11){reportMonth=0;reportYear++;}
+  renderReport();
+}
+
+function calcMaxStreak(y,m){
+  const days=new Date(y,m,0).getDate();
+  let max=0,cur=0;
+  for(let d=1;d<=days;d++){
+    const key=`cal_${y}_${m}_${d}`;
+    if(S[key]==='workout'){cur++;max=Math.max(max,cur);}
+    else cur=0;
+  }
+  return max;
+}
+
+function renderReport(){
+  const y=reportYear, m=reportMonth+1;
+  const isCurrentMonth=(y===now.getFullYear()&&m===now.getMonth()+1);
+  document.getElementById('report-month-title').textContent=`${y}년 ${m}월 리포트`;
+
+  // 홈트레이닝 집계
+  const daysInMonth=new Date(y,m,0).getDate();
+  const lastDay=isCurrentMonth?now.getDate():daysInMonth;
+  let wDays=0, restDays=0;
+  const dayCount=[0,0,0,0,0,0,0]; // 일~토 운동 횟수
+  for(let d=1;d<=daysInMonth;d++){
+    const key=`cal_${y}_${m}_${d}`;
+    const date=new Date(y,m-1,d);
+    if(S[key]==='workout'){wDays++;dayCount[date.getDay()]++;}
+    else if(S[key]==='rest')restDays++;
+  }
+  const wRate=lastDay>0?Math.round(wDays/lastDay*100):0;
+
+  document.getElementById('rp-wdays').textContent=wDays+'일';
+  document.getElementById('rp-wrate').textContent=wRate+'%';
+  document.getElementById('rp-restdays').textContent=restDays+'일';
+
+  // 요일별 분포 바
+  const maxDayCount=Math.max(...dayCount,1);
+  const dayNames=['일','월','화','수','목','금','토'];
+  const barColors=['#e05252','#2d9b58','#2d9b58','#2d9b58','#2d9b58','#2d9b58','#3a82d8'];
+  const barsEl=document.getElementById('rp-day-bars');
+  const lblsEl=document.getElementById('rp-day-labels');
+  barsEl.innerHTML=''; lblsEl.innerHTML='';
+  dayCount.forEach((cnt,i)=>{
+    const col=document.createElement('div'); col.className='report-day-col';
+    const pct=Math.round(cnt/maxDayCount*100);
+    col.innerHTML=`<div class="report-day-bar-wrap"><div class="report-day-bar" style="height:${Math.max(pct,4)}%;background:${barColors[i]};opacity:${cnt>0?1:0.2};"></div></div>`;
+    barsEl.appendChild(col);
+    const lbl=document.createElement('div'); lbl.className='report-day-col';
+    lbl.innerHTML=`<div class="report-day-lbl" style="color:${i===0?'#e05252':i===6?'#3a82d8':'var(--text-3)'}">${dayNames[i]}<br>${cnt}</div>`;
+    lblsEl.appendChild(lbl);
+  });
+
+  // 달리기 집계
+  const runRecs=getRunRecords(y,m);
+  const rDays=new Set(runRecs.map(r=>r.date)).size;
+  const rLaps=runRecs.reduce((a,r)=>a+r.laps,0);
+  const rKm=runRecs.reduce((a,r)=>a+r.km,0);
+  const rMin=runRecs.reduce((a,r)=>a+r.min,0);
+  document.getElementById('rp-rdays').textContent=rDays+'일';
+  document.getElementById('rp-rlaps').textContent=rLaps%1===0?rLaps:rLaps.toFixed(1);
+  document.getElementById('rp-rkm').textContent=rKm%1===0?rKm:rKm.toFixed(1);
+  document.getElementById('rp-rmin').textContent=rMin;
+  const paceEl=document.getElementById('rp-pace-info');
+  if(rKm>0&&rMin>0){
+    const pace=(rMin/rKm).toFixed(1);
+    paceEl.textContent=`평균 페이스 ${pace}분/km · 총 ${rDays}회 달리기`;
+  } else {
+    paceEl.textContent=rDays>0?`총 ${rDays}회 달리기 기록`:'이달 달리기 기록이 없어요.';
+  }
+
+  // 연속 기록
+  const curStreak=calcStreak();
+  const maxStreak=calcMaxStreak(y,m);
+  const totalAct=wDays+restDays;
+  document.getElementById('rp-cur-streak').textContent=curStreak;
+  document.getElementById('rp-max-streak').textContent=maxStreak;
+  document.getElementById('rp-total-act').textContent=totalAct+'일';
+
+  // 종합 점수 (운동달성률 60% + 달리기참여 20% + 연속기록 20%)
+  const runScore=Math.min(rDays/4*100,100)*0.2;
+  const streakScore=Math.min(maxStreak/7*100,100)*0.2;
+  const workoutScore=wRate*0.6;
+  const score=Math.round(workoutScore+runScore+streakScore);
+  document.getElementById('rp-score').textContent=score;
+
+  let grade,comment;
+  if(score>=85){grade='🏆';comment='완벽한 한 달이에요!
+꾸준함이 건강을 만들어요.';}
+  else if(score>=70){grade='🥇';comment='정말 잘하고 계세요!
+이 페이스를 유지해요.';}
+  else if(score>=55){grade='👍';comment='좋은 흐름이에요.
+조금만 더 힘내볼까요?';}
+  else if(score>=35){grade='💪';comment='시작이 반이에요!
+내일도 함께 운동해요.';}
+  else{grade='🌱';comment='지금부터 시작해도 괜찮아요.
+작은 것부터 차근차근!';}
+  document.getElementById('rp-grade').textContent=grade;
+  document.getElementById('rp-comment').textContent=comment;
+
+  // 이달의 한마디
+  const messages=[
+    `이번 달 ${wDays}일 운동 완료! ${wRate>=70?'목표를 훌륭히 달성했어요 🎉':'조금씩 늘려가 봐요 💪'}`,
+    rKm>0?`달리기 총 ${rKm%1===0?rKm:rKm.toFixed(1)}km 완주! ${rKm>=20?'대단한 거리예요 🏃':'계속 달려요 🏃'}`:null,
+    maxStreak>=3?`최장 ${maxStreak}일 연속 운동 달성! 습관이 만들어지고 있어요 🔥`:null,
+    curStreak>0?`현재 ${curStreak}일 연속 진행 중! 오늘도 이어가요 ✨`:null,
+  ].filter(Boolean).join('
+');
+  document.getElementById('rp-message').textContent=messages||'기록을 쌓아가면 여기서 이달의 한마디를 볼 수 있어요!';
 }
 
 // ── CALENDAR ──
